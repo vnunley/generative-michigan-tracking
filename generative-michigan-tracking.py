@@ -351,15 +351,36 @@ def create_pdf(word_sets, filename="output.pdf", language="en"):
     pdf.output(filename)
 
 
+def generate_exercises(num_words, num_puzzles, lang="en", caps=False, filename="output.pdf"):
+    """
+    This function generates a number of exercises, each containing a set of gibberish words.
+    The number of exercises and the number of words in each exercise are specified by the parameters.
+    The language parameter determines the language of the words, and the filename parameter
+    specifies the name of the output file. If the caps parameter is set to True, the words
+    will be in uppercase.
+
+    Parameters:
+    num_words (int): The number of words in each exercise.
+    num_puzzles (int): The number of exercises to create.
+    language (str, optional): The language of the words. Defaults to 'en'.
+    filename (str, optional): The name of the output file. Defaults to 'output.pdf'.
+    caps (bool, optional): If set to True, the words will be in uppercase. Defaults to False.
+
+    Returns:
+    None
+    """
+    word_sets = create_puzzles(num_words, num_puzzles, lang, caps)
+    create_pdf(word_sets, filename, lang)
+
+
 if __name__ == "__main__":
     lang = "en"
     for i in range(38):
         create_pdf(
-            create_puzzles(60, 10, lang),
+            create_puzzles(60, 10, lang, True),
             filename=f"generated-library/{lang}/exercise-{lang}-{str(i + 1).zfill(2)}.pdf",
             language=lang,
         )
-
     lang = "he"
     for i in range(38):
         create_pdf(

@@ -17,4 +17,4 @@ clean:
 run:
 	@echo "Running main.py..."
 	. venv/bin/activate
-	python3 main.py
+	python3 generative-michigan-tracking.py

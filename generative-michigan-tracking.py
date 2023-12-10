@@ -282,8 +282,8 @@ def create_pdf(word_sets, filename="output.pdf", language="en"):
 
     pdf.add_page()
     # Add בס"ד in 8 point font in the top right of the first page
-    pdf.add_font("NotoSansHebrew", "", "NotoSansHebrew.ttf", uni=True)
-    pdf.set_font("NotoSansHebrew", "", 8)
+    pdf.add_font("FrankRuhlLibre", "", "fonts/FrankRuhlLibre.ttf", uni=True)
+    pdf.set_font("FrankRuhlLibre", "", 8)
     pdf.set_xy(170, 10)
     pdf.cell(20, 0, text='ד"סב', align="R")
 
@@ -295,7 +295,7 @@ def create_pdf(word_sets, filename="output.pdf", language="en"):
     if language == "en":
         pdf.set_font("Times", "", size=14)
     elif language == "he":
-        pdf.set_font("NotoSansHebrew", "", size=12)
+        pdf.set_font("FrankRuhlLibre", "", size=12)
 
     # Iterate over word_sets
     for i, word_set in enumerate(word_sets):

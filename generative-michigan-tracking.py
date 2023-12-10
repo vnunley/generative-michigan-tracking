@@ -327,7 +327,7 @@ def create_pdf(word_sets, filename="output.pdf", language="en"):
             lines = []
             line = ""
             for word in word_set:
-                if len(line) + len(word) + 1 > 37:  # +1 for the space
+                if len(line) + len(word) + 1 > 36:  # +1 for the space
                     lines.append(line)
                     line = word
                 else:

@@ -9,47 +9,6 @@ from nltk.corpus import words
 nltk.download("words")
 
 
-def create_pdf(words):
-    """
-    This function creates a PDF named 'output.pdf' with a list of the alphabet
-    at the top. Below the alphabet, the words in the argument are printed in a
-    paragraph format. It also adds בס"ד in 8 point font in the top right of the first page.
-    """
-
-    # Creating instance of FPDF class
-    pdf = FPDF()
-
-    # Add a page
-    pdf.add_page()
-
-    # Set font to Times New Roman
-    pdf.set_font("Times", size=14)
-
-    # Add a cell with the alphabet
-    alphabet = " ".join([chr(i) for i in range(ord("A"), ord("Z") + 1)])
-    pdf.cell(200, 10, text=alphabet, ln=1, align="C")
-
-    # Add בס"ד in 8 point font in the top right of the first page
-    pdf.add_font("NotoSansHebrew", "", "NotoSansHebrew.ttf", uni=True)
-    pdf.set_font("NotoSansHebrew", "", 8)
-    pdf.set_xy(170, 10)
-    pdf.cell(20, 0, text='ד"סב', align="R")  
-
-    # Set margins for the paragraph
-    pdf.set_left_margin(30)
-    pdf.set_right_margin(30)
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.set_xy(30, 20)
-
-    # Set font and add a cell for the paragraph of words
-    pdf.set_font("Times", size=24)
-    paragraph = " ".join(words)
-    pdf.multi_cell(0, 10, text=paragraph)
-
-    # Save the pdf with name .pdf
-    pdf.output("output.pdf")
-
-
 def intersperse_true_values(e, t):
     """
     This function creates a list of boolean values with a specified number of
@@ -178,7 +137,7 @@ def generate_word(length, current_letter, add_letter):
     return word
 
 
-def generate_puzzle(num_words, caps=False):
+def generate_word_set(num_words, language="en", caps=False):
     """
     This function generates a list of gibberish words.
     """
@@ -209,5 +168,88 @@ def generate_puzzle(num_words, caps=False):
     return gibberish_words
 
 
+def create_puzzles(num_words, num_puzzles, lang="en", caps=False):
+    """
+    This function creates a number of puzzles, each containing a set of gibberish words.
+    The number of puzzles and the number of words in each puzzle are specified by the parameters.
+    The language parameter determines the language of the words, and the filename parameter
+    specifies the name of the output file. If the caps parameter is set to True, the words
+    will be in uppercase.
+
+    Parameters:
+    num_words (int): The number of words in each puzzle.
+    num_puzzles (int): The number of puzzles to create.
+    language (str, optional): The language of the words. Defaults to 'en'.
+    filename (str, optional): The name of the output file. Defaults to 'output.pdf'.
+    caps (bool, optional): If set to True, the words will be in uppercase. Defaults to False.
+
+    Returns:
+    None
+    """
+    word_sets = [
+        generate_word_set(num_words, lang, caps=caps) for _ in range(num_puzzles)
+    ]
+
+    return word_sets
+
+
+def create_pdf(word_sets, filename="output.pdf"):
+    """
+    This function creates a PDF named 'output.pdf' with a list of the alphabet
+    at the top. Below the alphabet, the words in each set of the argument are printed in a
+    paragraph format. It also adds בס"ד in 8 point font in the top right of the first page.
+    It repeats the alphabet and words for each entry in `word_sets`, two per page max.
+    """
+
+    if word_sets is None:
+        raise ValueError("word_sets cannot be None")
+
+    # Creating instance of FPDF class
+    pdf = FPDF()
+
+    # Add a cell with the alphabet
+    alphabet = " ".join([chr(i) for i in range(ord("A"), ord("Z") + 1)])
+
+    pdf.add_page()
+    # Add בס"ד in 8 point font in the top right of the first page
+    pdf.add_font("NotoSansHebrew", "", "NotoSansHebrew.ttf", uni=True)
+    pdf.set_font("NotoSansHebrew", "", 8)
+    pdf.set_xy(170, 10)
+    pdf.cell(20, 0, text='ד"סב', align="R")
+
+    # Set margins for the paragraph
+    pdf.set_left_margin(30)
+    pdf.set_right_margin(30)
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    # Iterate over word_sets
+    for i, word_set in enumerate(word_sets):
+        # Add a page every two word sets
+        if i % 2 == 0 and i > 0:
+            pdf.add_page()
+
+        # Set font to Times New Roman
+        pdf.set_font("Times", size=14)
+
+        # Add the alphabet at the top center of each word_set
+        # Adjust the y position for the alphabet to avoid overlap
+        y_position_alphabet = 10 if i % 2 == 0 else 130
+        pdf.set_xy(25, y_position_alphabet)
+        pdf.cell(0, 10, text=alphabet, ln=1, align="C")
+
+        # Adjust the y position for each word set to avoid overlap
+        y_position = 20 if i % 2 == 0 else 140
+        pdf.set_xy(30, y_position)
+
+        # Set font and add a cell for the paragraph of words
+        pdf.set_font("Times", size=24)
+        paragraph = " ".join(word_set)
+        pdf.multi_cell(0, 10, text=paragraph)
+
+    # Save the pdf with name .pdf
+    pdf.output(filename)
+
+
 if __name__ == "__main__":
-    create_pdf(generate_puzzle(60, True))
+    lang = "en"
+    create_pdf(create_puzzles(60, 8, lang), filename=f"output-{lang}.pdf")

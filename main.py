@@ -33,7 +33,7 @@ def create_pdf(words):
     pdf.add_font("NotoSansHebrew", "", "NotoSansHebrew.ttf", uni=True)
     pdf.set_font("NotoSansHebrew", "", 8)
     pdf.set_xy(170, 10)
-    pdf.cell(20, 0, text='ד"סב', align="R")
+    pdf.cell(20, 0, text='ד"סב', align="R")  
 
     # Set margins for the paragraph
     pdf.set_left_margin(30)
